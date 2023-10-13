@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
 public @interface FilmReleaseDateConstraint {
     String message() default "Must be after 28.12.1895";
     Class <?>[] groups() default {};
-    Class < ? extends Payload > [] payload() default {};
+    Class <?extends Payload>[] payload() default {};
 }
