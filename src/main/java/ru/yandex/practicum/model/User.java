@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class User {
     private int id;
-    private String name;
+    private String name; // Может быть пустым
     @NotBlank
     @Pattern(regexp = "\\S+")
     private String login;

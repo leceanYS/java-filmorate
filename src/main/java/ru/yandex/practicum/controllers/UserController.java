@@ -54,7 +54,7 @@ public class UserController {
 
         checkName(user);
 
-        // Если все проверки пройдены, то user обновляется.
+        // Если все проверки пройдены, то объект user обновляется.
         users.put(user.getId(), user);
         log.info("Пользователь обновлен {}", user);
 
