@@ -1,5 +1,5 @@
 package ru.yandex.practicum.model;
-
+import lombok.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.yandex.practicum.validannotation.FilmReleaseDateConstraint;
@@ -12,14 +12,23 @@ import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(force = true)
 public class Film {
+    @EqualsAndHashCode.Exclude
     private int id;
-    @NotBlank
+    @NonNull
     private String name;
-    @Size(max=200)
+    @NonNull
     private String description;
-    @FilmReleaseDateConstraint
+    @NonNull
     private LocalDate releaseDate;
-    @Positive
-    private long duration;
+    @NonNull
+    private int duration;
+
+    public Film(@NonNull String name, @NonNull String description, @NonNull LocalDate releaseDate, @NonNull int duration) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+    }
 }
