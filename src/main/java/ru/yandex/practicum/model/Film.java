@@ -1,12 +1,8 @@
 package ru.yandex.practicum.model;
+
 import lombok.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.yandex.practicum.validannotation.FilmReleaseDateConstraint;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 
