@@ -21,7 +21,7 @@ class FilmControllerTest {
     private final String description = "In the futuristic Westworld amusement park, specially designed " +
             "androids fulfill any whims of visitors so that they feel impunity and complete freedom " +
             "actions. If the robot is killed, it doesn’t matter, the technicians will fix it, erase its memory and put it back into service, " +
-            "towards a new day and new human whims. But it turns out that not all robots lose memories. " ;
+            "towards a new day and new human whims. But it turns out that not all robots lose memories. ";
 
     @BeforeEach
     public void create() {
