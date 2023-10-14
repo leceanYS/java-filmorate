@@ -13,6 +13,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class FilmControllerTest {
     private Validator validator;
     private Set<ConstraintViolation<Film>> violations;
