@@ -12,8 +12,6 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = ReleaseDateValidator.class)
 public @interface FilmReleaseDateConstraint {
     String message() default "Must be after 28.12.1895";
-
-    Class <?>[] groups() default {};
-
-    Class <? extends Payload>[] payload() default {};
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
 }
