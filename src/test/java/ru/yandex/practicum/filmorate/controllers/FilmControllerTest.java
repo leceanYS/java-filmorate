@@ -18,11 +18,10 @@ class FilmControllerTest {
     private Validator validator;
     private Set<ConstraintViolation<Film>> violations;
     private Film film;
-    private final String description = "В футуристическом парке развлечений «Мир Дикого Запада» специально сконструированные " +
-            "андроиды выполняют любые прихоти посетителей, чтобы те чувствовали безнаказанность и полную свободу " +
-            "действий. Если робота убили — не беда, техники его починят, сотрут память и снова поставят в строй, " +
-            "навстречу новому дню и новым людским прихотям. Но оказывается, что далеко не все роботы теряют " +
-            "воспоминания.";
+    private final String description = "In the futuristic Westworld amusement park, specially designed " +
+            "androids fulfill any whims of visitors so that they feel impunity and complete freedom " +
+            "actions. If the robot is killed, it doesn’t matter, the technicians will fix it, erase its memory and put it back into service, " +
+            "towards a new day and new human whims. But it turns out that not all robots lose memories. " ;
 
     @BeforeEach
     public void create() {
