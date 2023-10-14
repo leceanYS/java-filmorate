@@ -15,7 +15,7 @@ public class Film {
     private int id;
     @NotBlank
     private String name;
-    @Size(max=200)
+    @Size(max = 200)
     private String description;
     @FilmReleaseDateConstraint
     private LocalDate releaseDate;
