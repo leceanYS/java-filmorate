@@ -64,7 +64,7 @@ public class UserController {
 
     // Если имя пустое, то login становится именем.
     private void checkName(User user) {
-        boolean isNameCorrect = (user.getName() != null) && (!user.getName().isEmpty());
+        boolean isNameCorrect = (user.getName() != null) && (!user.getName().isBlank());
 
         if (!isNameCorrect) {
             user.setName(user.getLogin());
