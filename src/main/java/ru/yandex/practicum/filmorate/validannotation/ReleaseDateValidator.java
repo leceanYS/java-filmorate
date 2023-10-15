@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import java.time.LocalDate;
 
-public class ReleaseDateValidator{
+public class ReleaseDateValidator {
     private final LocalDate dateAfter = LocalDate.of(1895, 12, 28);
     // дата релиза для создания фильма 1967-03-25, в ТЗ
     private final Logger log = LoggerFactory.getLogger(UserController.class);
