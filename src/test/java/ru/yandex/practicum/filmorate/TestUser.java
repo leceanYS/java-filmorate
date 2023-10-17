@@ -17,7 +17,7 @@ public class TestUser {
 
     @BeforeEach
     public void setData() {
-        templateUser = new User("example@yandex.ru", "Lecean", "Yury", LocalDate.of(1996, 3, 3));
+        templateUser = new User("example@yandex.ru", "Lecea", "Yury", LocalDate.of(1996, 3, 3));
     }
 
     @Test
