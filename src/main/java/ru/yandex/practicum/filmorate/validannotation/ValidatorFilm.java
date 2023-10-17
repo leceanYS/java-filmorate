@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ValidatorFilm {
     private final LocalDate dateAfter = LocalDate.of(1895, 12, 28); // в коллекции тестов в Postman
-    // дата релиза для создания фильма 1967-03-25, в ТЗ
+
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
     public void validation(Film film) throws ValidationException {
@@ -30,7 +30,7 @@ public class ValidatorFilm {
         }
     }
 
-    public void validationId(Film film, List<Film> films) { // ????????????????????????????????????????????????
+    public void validationId(Film film, List<Film> films) {
         boolean filmId = false;
         for (Film film1 : films) {
             if (film1.getId() == film.getId()) {

@@ -38,7 +38,7 @@ public class ValidationUser {
         } else if (user.getLogin().length() == 0) {
             throw new ValidationException("login слишком короткий");
         }
-        if (user.getName() == null) { //
+        if (user.getName() == null) {
             log.info("Ошибка в поле имени " + user);
             user.setName(user.getLogin());
         } else if (user.getName().length() == 0) {
@@ -53,7 +53,7 @@ public class ValidationUser {
         }
     }
 
-    public void validationId(User user, List<User> users) { // ????????????????????????????????????????????????
+    public void validationId(User user, List<User> users) {
         boolean userId = false;
         for (User user1 : users) {
             if (user1.getId() == user.getId()) {
