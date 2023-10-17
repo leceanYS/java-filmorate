@@ -17,7 +17,7 @@ public class TestUser {
 
     @BeforeEach
     public void setData() {
-        templateUser = new User("myMail@yandex.ru", "NiSega", "Sergey", LocalDate.of(1990, 1, 6));
+        templateUser = new User("example@yandex.ru", "Lecean", "Yury", LocalDate.of(1996, 3, 3));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class TestUser {
     void createAnObjecPut() {
         userController.addUser(templateUser);
         templateUser.setId(1);
-        templateUser.setName("Вася");
+        templateUser.setName("Василий");
         userController.updateUser(templateUser);
         assertEquals(1, userController.getAllUsers().size(), "Пользователь обновлен");
     }

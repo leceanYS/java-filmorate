@@ -18,7 +18,7 @@ public class TestFilm {
 
     @BeforeEach
     public void setData() {
-        templateFilm = new Film("Догма", "Треш, угар и содомия", LocalDate.of(1999, 10, 12), 2);
+        templateFilm = new Film("Зеленая миля", "Боль помечает наши лица", LocalDate.of(1999, 04, 18), 2);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class TestFilm {
     void createAnObjectPut() {
         filmController.addFilm(templateFilm);
         templateFilm.setId(1);
-        templateFilm.setName("Догма 2");
+        templateFilm.setName("Зеленая миля 2");
         filmController.updateFilm(templateFilm);
         assertEquals(1, filmController.getAllFilms().size(), "Фильм обновлен");
     }
