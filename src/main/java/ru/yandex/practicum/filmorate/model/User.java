@@ -1,28 +1,26 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class User {
-    @EqualsAndHashCode.Exclude
     private int id;
-    @NonNull
-    private String email;
-    @NonNull
+    private String name; // Может быть пустым
+    @NotNull
+    @Pattern(regexp = "\\S+")
     private String login;
-    @NonNull
-    private String name;
-    @NonNull
+    @PastOrPresent
     private LocalDate birthday;
-
-    public User(@NonNull String email, @NonNull String login, @NonNull String name, @NonNull LocalDate dateOfBirth) {
-        this.email = email;
-        this.login = login;
-        this.name = name;
-        this.birthday = dateOfBirth;
-    }
+    @NotBlank
+    @Email
+    private String email;
 }
