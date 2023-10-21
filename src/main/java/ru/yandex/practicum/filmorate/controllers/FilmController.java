@@ -12,47 +12,46 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    private int id;
+    private int id = 1;
     private final Map<Integer, Film> films = new HashMap<>();
 
-    // получение всех фильмов
-    @GetMapping
+    @PostMapping("/films")
+    public Film createFilm(@Valid @RequestBody Film film) {
+        log.trace("Start create film");
+        Film newFilm = film.toBuilder().id(getNextId()).build();
+        films.put(newFilm.getId(), newFilm);
+        return newFilm;
+    }
+
+    @GetMapping("/films")
     public List<Film> getAllFilms() {
-        log.info("Список всех фильмов {} отправлен клиенту", films.values());
         return new ArrayList<>(films.values());
     }
 
-    // добавление фильма
-    @PostMapping
-    public Film postFilm(@Valid @RequestBody Film film) {
-        if (film.getId() != 0) {
-            log.warn("В метод POST передан id фильма");
-            throw new ValidationException("В метод POST нельзя передавать id фильма");
+    @PutMapping("/films")
+    public Film updateFilm(@Valid @RequestBody Film film) {
+        log.info("Start update film");
+        if (films.containsKey(film.getId())) {
+            Film newFilm = films.get(film.getId())
+                    .toBuilder()
+                    .id(film.getId())
+                    .name(film.getName())
+                    .duration(film.getDuration())
+                    .description(film.getDescription())
+                    .releaseDate(film.getReleaseDate())
+                    .build();
+            films.put(film.getId(), newFilm);
+            log.info("Film update");
+            return newFilm;
+        } else {
+            log.info("Film is not update");
+            throw new ValidationException("Film not found");
         }
-
-        film.setId(++id);
-
-        films.put(film.getId(), film);
-        log.info("Фильм добавлен {}", film);
-
-        return film;
     }
 
-    // обновление фильма
-    @PutMapping
-    public Film putFilm(@Valid @RequestBody Film film) {
-        boolean isThereAnId = films.containsKey(film.getId());
-        if (!isThereAnId) {
-            log.warn("В метод PUT передан фильм с несуществующим id");
-            throw new ValidationException("Фильма с таким id нет");
-        }
-
-        films.put(film.getId(), film);
-        log.info("Фильм обновлен {}", film);
-
-        return film;
+    private int getNextId() {
+        return id++;
     }
 }

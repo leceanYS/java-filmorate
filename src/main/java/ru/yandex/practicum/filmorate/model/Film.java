@@ -1,24 +1,25 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import ru.yandex.practicum.filmorate.validannotation.FilmReleaseDateConstraint;
+import lombok.Builder;
+import lombok.Value;
+import org.hibernate.validator.constraints.Length;
+import ru.yandex.practicum.filmorate.validannotation.interfaces.DateTimeValidatorCustom;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
+@Value
+@Builder(toBuilder = true)
 public class Film {
-    private int id;
-    @NotBlank
-    private String name;
-    @Size(max = 200)
-    private String description;
-    @FilmReleaseDateConstraint
-    private LocalDate releaseDate;
-    @Positive
-    private long duration;
+    int id;
+    @NotBlank(message = "Title can not be empty") @NotNull
+    String name;
+    @Length(max = 200, message = "Description should be less than 200 length")
+    String description;
+    @NotNull(message = "Release date is incorrect")
+    @DateTimeValidatorCustom(max = "28/12/1895", message = "Release date less than min release date")
+    LocalDate releaseDate;
+    @Positive(message = "Duration should be greater than 0")
+    int duration;
+    public static final LocalDate MIN_DATE = LocalDate.of(1895, 12, 28);
 }

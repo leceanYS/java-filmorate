@@ -1,26 +1,21 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import org.jetbrains.annotations.NotNull;
+import lombok.Builder;
+import lombok.Value;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
+@Value
+@Builder(toBuilder = true)
 public class User {
-    private int id;
-    private String name; // Может быть пустым
-    @NotNull
-    @Pattern(regexp = "\\S+")
-    private String login;
-    @PastOrPresent
-    private LocalDate birthday;
-    @NotBlank
-    @Email
-    private String email;
+    int id;
+    @Email(message = "Email is incorrect")
+    String email;
+    @NotBlank(message = "Login must should not be empty")
+    String login;
+    @Builder.Default
+    String name = "";
+    @Past(message = "Birthday must should be less than today")
+    LocalDate birthday;
 }

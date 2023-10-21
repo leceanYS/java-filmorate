@@ -11,63 +11,45 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @RestController
-@RequestMapping("/users")
 @Slf4j
 public class UserController {
-    private int id;
-    private final Map<Integer, User> users = new HashMap<>();
+    private int id = 1;
+    private final Map<Integer, User> userMap = new HashMap<>();
 
-    // получение списка всех пользователей
-    @GetMapping
-    public List<User> getAllUsers() {
-        log.info("Список всех пользователей {} отправлен клиенту", users.values());
-
-        return new ArrayList<>(users.values());
+    @PostMapping("/users")
+    public User createUser(@Valid @RequestBody User user) {
+        log.trace("Start create user");
+        User newUser = user.toBuilder()
+                .id(getNextId())
+                .name((user.getName() == null || user.getName().isBlank()) ? user.getLogin() : user.getName())
+                .build();
+        userMap.put(newUser.getId(), newUser);
+        return newUser;
     }
 
-    // создание пользователя
-    @PostMapping
-    public User postUser(@Valid @RequestBody User user) {
-        if (user.getId() != 0) {
-            log.warn("В метод POST передан id пользователя");
-            throw new ValidationException("В метод POST нельзя передавать id пользователя");
+    @PutMapping("/users")
+    public User updateUser(@Valid @RequestBody User user) {
+        if (userMap.containsKey(user.getId())) {
+            User newUser = userMap.get(user.getId()).toBuilder()
+                    .email(user.getEmail())
+                    .login(user.getLogin())
+                    .name(user.getName().isEmpty() ? user.getLogin() : user.getName())
+                    .birthday(user.getBirthday())
+                    .build();
+            userMap.put(newUser.getId(), newUser);
+            return newUser;
+        } else {
+            throw new ValidationException("User not found");
         }
-
-        checkName(user);
-        user.setId(++id);
-
-        users.put(user.getId(), user);
-        log.info("Пользователь добавлен {}", user);
-
-        return user;
     }
 
-    // обновление пользователя
-    @PutMapping
-    public User putUser(@Valid @RequestBody User user) {
-        boolean isThereAnId = users.containsKey(user.getId());
-        if (!isThereAnId) {
-            log.warn("В метод PUT передан пользователь с несуществующим id");
-            throw new ValidationException("Пользователя с таким id нет");
-        }
-
-        checkName(user);
-
-        // Если все проверки пройдены, то объект user обновляется.
-        users.put(user.getId(), user);
-        log.info("Пользователь обновлен {}", user);
-
-        return user;
+    @GetMapping("/users")
+    public List<User> getAllUser() {
+        return new ArrayList<>(userMap.values());
     }
 
-    // Если имя пустое, то login становится именем.
-    private void checkName(User user) {
-        boolean isNameCorrect = (user.getName() != null) && (!user.getName().isBlank());
-
-        if (!isNameCorrect) {
-            user.setName(user.getLogin());
-        }
+    private int getNextId() {
+        return id++;
     }
 }
