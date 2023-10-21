@@ -78,6 +78,6 @@ class UserControllerTest {
         user.setBirthday(LocalDate.now().plusDays(1));
         violations = validator.validate(user);
 
-        assertEquals(1, violations.size());
+        assertEquals(2, violations.size());
     }
 }
