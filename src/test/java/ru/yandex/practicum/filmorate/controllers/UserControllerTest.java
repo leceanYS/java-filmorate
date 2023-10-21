@@ -62,7 +62,7 @@ class UserControllerTest {
         user.setLogin("login name");
         violations = validator.validate(user);
 
-        assertEquals(1, violations.size());
+        assertEquals(2, violations.size());
     }
 
     @Test
