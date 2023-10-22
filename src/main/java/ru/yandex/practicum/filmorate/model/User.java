@@ -16,6 +16,7 @@ public class User {
     String login;
     @Builder.Default
     String name = "";
-    @Past(message = "Birthday must should be less than today")
+    @NotNull
+    @PastOrPresent(message = "Birthday must should be less than today")
     LocalDate birthday;
 }

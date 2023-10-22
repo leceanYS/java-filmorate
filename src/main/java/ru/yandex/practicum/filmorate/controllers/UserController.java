@@ -31,10 +31,11 @@ public class UserController {
     @PutMapping("/users")
     public User updateUser(@Valid @RequestBody User user) {
         if (userMap.containsKey(user.getId())) {
-            User newUser = userMap.get(user.getId()).toBuilder()
+            User newUser = userMap.put(user.getId(), user)
+                    .toBuilder()
                     .email(user.getEmail())
                     .login(user.getLogin())
-                    .name(user.getName().isEmpty() ? user.getLogin() : user.getName())
+                    .name((user.getName() == null || user.getName().isBlank()) ? user.getLogin() : user.getName())
                     .birthday(user.getBirthday())
                     .build();
             userMap.put(newUser.getId(), newUser);

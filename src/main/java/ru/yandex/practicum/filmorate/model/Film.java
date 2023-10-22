@@ -14,6 +14,7 @@ public class Film {
     int id;
     @NotBlank(message = "Title can not be empty") @NotNull
     String name;
+    @NotNull
     @Length(max = 200, message = "Description should be less than 200 length")
     String description;
     @NotNull(message = "Release date is incorrect")

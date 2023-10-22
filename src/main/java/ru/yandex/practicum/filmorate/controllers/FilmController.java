@@ -34,7 +34,7 @@ public class FilmController {
     public Film updateFilm(@Valid @RequestBody Film film) {
         log.info("Start update film");
         if (films.containsKey(film.getId())) {
-            Film newFilm = films.get(film.getId())
+            Film newFilm = films.put(film.getId(), film)
                     .toBuilder()
                     .id(film.getId())
                     .name(film.getName())
