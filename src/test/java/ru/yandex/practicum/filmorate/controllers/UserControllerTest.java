@@ -18,6 +18,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -34,6 +35,7 @@ class UserControllerTest {
             .birthday(LocalDate.of(1996, 3, 3))
             .name("Yury")
             .email("example@yandex.ru")
+            .friends(new HashSet<>())
             .build();
 
     @Test

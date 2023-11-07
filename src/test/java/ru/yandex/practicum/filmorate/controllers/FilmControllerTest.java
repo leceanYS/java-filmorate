@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -36,6 +37,7 @@ class FilmControllerTest {
             .description("The futuristic Westworld amusement park has specially designed" +
                     "androids fulfill every whim of visitors, so that I feel impunity and complete freedom")
             .duration(87)
+            .likes(new HashSet<>())
             .build();
     @Autowired
     private ObjectMapper objectMapper;
