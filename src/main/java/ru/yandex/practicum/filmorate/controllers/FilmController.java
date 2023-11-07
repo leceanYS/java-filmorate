@@ -54,7 +54,6 @@ public class FilmController {
         log.info("Start remove Like");
         return filmService.removeLike(id, userId);
     }
-    @Positive
     @GetMapping("/popular")
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count) {
         log.info("Start getting popular films");
