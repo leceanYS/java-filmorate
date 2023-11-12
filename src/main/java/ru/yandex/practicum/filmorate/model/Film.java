@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Value;
 import org.hibernate.validator.constraints.Length;
@@ -16,7 +17,10 @@ import java.util.Set;
 @Value
 @Builder(toBuilder = true)
 public class Film {
-    private static final LocalDate MIN_DATE = LocalDate.of(1895, 12, 28);
+    @JsonIgnore
+    public int getRate() {
+        return likes.size();
+    }
     int id;
     @NotBlank(message = "Title can not be empty") @NotNull
     String name;
@@ -31,4 +35,5 @@ public class Film {
     int rate = 0;
     @JsonBackReference
     Set<Integer> likes;
+
 }

@@ -28,14 +28,12 @@ public class UserService {
     public User createUser(User user) {
         return inMemoryUserStorage.createUser(user.toBuilder()
                 .name((user.getName() == null || user.getName().isBlank()) ? user.getLogin() : user.getName())
-                .friends(new HashSet<>())
                 .id(getNextId()).build());
     }
 
     public User updateUser(User user) {
         User oldUser = inMemoryUserStorage.getUser(user.getId());
         return inMemoryUserStorage.updateUser(user.toBuilder()
-                .friends(oldUser.getFriends())
                 .build());
     }
 

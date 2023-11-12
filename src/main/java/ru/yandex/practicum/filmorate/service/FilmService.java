@@ -40,7 +40,7 @@ public class FilmService {
         return inMemoryFilmStorage.getAllFilms().stream().sorted(new Comparator<Film>() {
             @Override
             public int compare(Film o1, Film o2) {
-                return o2.getLikes().size() - o1.getLikes().size();
+                return o2.getRate() - o1.getRate();
             }
         }).limit(count).collect(Collectors.toList());
     }
