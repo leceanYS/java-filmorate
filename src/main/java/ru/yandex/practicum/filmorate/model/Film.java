@@ -21,6 +21,7 @@ public class Film {
     public int getRate() {
         return likes.size();
     }
+
     int id;
     @NotBlank(message = "Title can not be empty") @NotNull
     String name;
