@@ -44,11 +44,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
-        if (users.containsKey(user.getId())) {
-            throw new AlreadyExistException("User already exist in storage");
-        } else {
-            users.put(user.getId(), user);
-            return user;
-        }
+        throw new AlreadyExistException("User already exist in storage");
     }
 }

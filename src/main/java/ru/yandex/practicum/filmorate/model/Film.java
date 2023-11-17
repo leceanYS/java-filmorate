@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Value
@@ -34,7 +35,8 @@ public class Film {
     int duration;
     @Builder.Default
     int rate = 0;
+    @JsonIgnore
     @JsonBackReference
-    Set<Integer> likes;
+    Set<Integer> likes = new HashSet<>();
 
 }

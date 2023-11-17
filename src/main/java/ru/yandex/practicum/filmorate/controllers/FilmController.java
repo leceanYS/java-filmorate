@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -80,7 +81,7 @@ public class FilmController {
         log.info("Start remove Like");
         return filmService.removeLike(id, userId);
     }
-
+    @Positive
     @Operation(summary = "Получение списка популярных фильмов")
     @GetMapping("/popular")
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count) {

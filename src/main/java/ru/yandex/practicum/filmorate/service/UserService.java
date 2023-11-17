@@ -48,13 +48,9 @@ public class UserService {
     public List<User> getMutualFriendsList(int userId1, int userId2) {
         Set<Integer> allFriendsFirstUser = new HashSet<>(inMemoryUserStorage.getUser(userId1).getFriends());
         Set<Integer> allFriendsSecondUser = new HashSet<>(inMemoryUserStorage.getUser(userId2).getFriends());
-        if (allFriendsSecondUser == null) {
-            return new ArrayList<>();
-        } else {
-            allFriendsFirstUser.retainAll(allFriendsSecondUser);
-            return allFriendsFirstUser.stream().map(inMemoryUserStorage::getUser).collect(Collectors.toList());
-        }
-
+        new ArrayList<>();
+        allFriendsFirstUser.retainAll(allFriendsSecondUser);
+        return allFriendsFirstUser.stream().map(inMemoryUserStorage::getUser).collect(Collectors.toList());
     }
 
     public User addNewFriend(int userId1, int userId2) {

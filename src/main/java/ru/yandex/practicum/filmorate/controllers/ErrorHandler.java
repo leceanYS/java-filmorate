@@ -1,51 +1,48 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exceptions.AlreadyExistException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, ValidationException.class})
-    public ResponseEntity<Map<String, String>> handle(final Exception ex) {
-        Map<String, String> error = new HashMap<>();
-        if (ex instanceof MethodArgumentNotValidException) {
-            BindingResult bindingResult = ((MethodArgumentNotValidException) ex).getBindingResult();
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            for (FieldError fe : errors) {
-                error.put(fe.getField(), fe.getDefaultMessage());
-            }
-        }
-        if (ex instanceof ValidationException) {
-            error.put("releaseDate", "Release date less than min release date");
-        }
-        return ResponseEntity.badRequest().body(error);
-    }
+    private static final Logger log = LoggerFactory.getLogger(ErrorHandler.class);
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Map<String, String>> handle(final NotFoundException exception) {
-        return new ResponseEntity<>(Map.of("not found error", exception.getMessage()), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(AlreadyExistException.class)
-    public ResponseEntity<Map<String, String>> handle(final AlreadyExistException exception) {
-        return new ResponseEntity<>(Map.of("already exist error", exception.getMessage()), HttpStatus.NOT_FOUND);
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFoundException(final NotFoundException e) {
+        log.info("404 {}", e.getMessage());
+        return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handle(final NullPointerException e) {
-        return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationException(final ValidationException e) {
+        log.error("400 {}", e.getMessage());
+        return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleAlreadyExistException(final AlreadyExistException e) {
+        log.info("409 {}", e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleThrowable(final Throwable e) {
+        log.info("500 {}", e.getMessage(), e);
+        return new ErrorResponse(e.getMessage());
+    }
+
 }

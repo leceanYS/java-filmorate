@@ -5,12 +5,13 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +24,6 @@ public class FilmService {
     public Film createFilm(Film film) {
         return inMemoryFilmStorage.createFilm(film.toBuilder()
                 .id(getNextId())
-                .likes(new HashSet<>())
                 .rate(film.getRate())
                 .build());
     }
@@ -49,21 +49,20 @@ public class FilmService {
         Film filmToUpdate = inMemoryFilmStorage.getFilm(filmId);
         Set<Integer> users = filmToUpdate.getLikes();
         users.add(inMemoryUserStorage.getUser(userId).getId());
-        return inMemoryFilmStorage.updateFilm(filmToUpdate.toBuilder().likes(users).build());
+        return inMemoryFilmStorage.updateFilm(filmToUpdate.toBuilder().build());
     }
 
     public Film removeLike(Integer filmId, Integer userId) {
         Film filmToUpdate = inMemoryFilmStorage.getFilm(filmId);
         Set<Integer> users = filmToUpdate.getLikes();
         users.remove(inMemoryUserStorage.getUser(userId).getId());
-        return inMemoryFilmStorage.updateFilm(filmToUpdate.toBuilder().likes(users).build());
+        return inMemoryFilmStorage.updateFilm(filmToUpdate.toBuilder().build());
     }
 
     public Film updateFilm(Film film) {
         Film oldFilm = inMemoryFilmStorage.getFilm(film.getId());
         return inMemoryFilmStorage.updateFilm(film.toBuilder()
-                .likes(oldFilm.getLikes())
-                .build());
+               .build());
     }
 
     private int getNextId() {
