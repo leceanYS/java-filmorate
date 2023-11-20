@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,7 +21,8 @@ public class UserService {
     public UserStorage getUserStorage() {
         return userStorage;
     }
-// public UserService(UserStorage userStorage) { this.userStorage = userStorage; } вариант замены но возникают проблемы
+
+    // public UserService(UserStorage userStorage) { this.userStorage = userStorage; } вариант замены но возникают проблемы
     private void validate(User user) {
         if ((user.getName() == null) || user.getName().isBlank()) {
             user.setName(user.getLogin());
