@@ -20,13 +20,15 @@ public class FilmService {
 
     private final FilmStorage filmStorage;
     private final UserService userService;
+    private static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
 
     private void validate(Film film) {
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+        if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
             throw new BadRequestException("Ошибка по минимальной дате релиза фильма," +
                     "releaseDate не может быть меньше 28 декабря 1895 года");
         }
     }
+
 
     public List<Film> getFilms() {
         log.info("GET. Пришел  запрос /films на получение списка фильмов");

@@ -22,7 +22,7 @@ public class UserService {
     public UserStorage getUserStorage() {
         return userStorage;
     }
-
+// public UserService(UserStorage userStorage) { this.userStorage = userStorage; } вариант замены но возникают проблемы
     private void validate(User user) {
         if ((user.getName() == null) || user.getName().isBlank()) {
             user.setName(user.getLogin());
@@ -83,11 +83,10 @@ public class UserService {
         log.info("'{}' запросил список общих друзей '{}'", userId, friendId);
         if (userFriends.stream().anyMatch(friendFriends::contains)) {
             return userFriends.stream()
-                    .filter(userFriends::contains)
                     .filter(friendFriends::contains)
                     .map(userStorage::getUser).collect(Collectors.toList());
         } else {
-            return new ArrayList<>();
+            return List.of();
         }
     }
 

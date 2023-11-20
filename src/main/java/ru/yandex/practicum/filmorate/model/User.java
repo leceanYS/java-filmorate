@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,9 +19,11 @@ public class User {
     @NotBlank
     @Email
     private String email;
-    @NotBlank(message = "Поле login не может содержать пробелы")
+    @NotBlank(message = "Поле login не может быть пустым или содержать пробелы")
+    @Pattern(regexp = "\\S+", message = "Поле login не может содержать пробелы")
     private String login;
     private String name;
+    @NotNull
     @PastOrPresent
     private LocalDate birthday;
     @JsonIgnore

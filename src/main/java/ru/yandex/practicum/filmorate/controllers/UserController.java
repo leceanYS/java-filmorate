@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -17,7 +16,6 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
     private final UserService userService;
 
     @GetMapping
@@ -31,7 +29,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@RequestBody @Valid User user) throws NotFoundException {
+    public User updateUser(@RequestBody @Valid User user) {
         return userService.updateUser(user);
     }
 
