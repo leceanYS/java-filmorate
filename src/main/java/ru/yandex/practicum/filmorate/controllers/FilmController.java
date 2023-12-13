@@ -2,12 +2,13 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -16,11 +17,11 @@ import java.util.List;
 @RequestMapping("/films")
 public class FilmController {
 
-
+    @Autowired
     public final FilmService filmService;
 
     @GetMapping
-    public List<Film> getFilms() {
+    public Collection<Film> getFilms() {
         return filmService.getFilms();
     }
 
@@ -32,6 +33,11 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@RequestBody @Valid Film film) {
         return filmService.updateFilm(film);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteFilm(@PathVariable Long id) {
+        filmService.deleteFilm(id);
     }
 
     @GetMapping("/{id}")
@@ -50,7 +56,8 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopularMovies(@RequestParam(defaultValue = "10") @Min(1) Integer count) {
+    public List<Film> getPopularMovies(@RequestParam(defaultValue = "10") Integer count) {
         return filmService.getFirstMostPopularFilms(count);
     }
+
 }

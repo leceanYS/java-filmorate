@@ -5,11 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,16 +21,20 @@ public class UserService {
         return userStorage;
     }
 
-    // public UserService(UserStorage userStorage) { this.userStorage = userStorage; } вариант замены но возникают проблемы
     private void validate(User user) {
         if ((user.getName() == null) || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
     }
 
-    public List<User> getUsers() {
+    private void checkUser(Long userId, Long friendId) {
+        userStorage.getUser(userId);
+        userStorage.getUser(friendId);
+    }
+
+    public Collection<User> getUsers() {
         log.info("GET. Пришел  запрос /users на получение списка пользователей");
-        List<User> response = userStorage.getUsers();
+        Collection<User> response = userStorage.getUsers();
         log.info("GET. Отправлен ответ /users на получение списка пользователей");
         return response;
     }
@@ -56,47 +59,37 @@ public class UserService {
         return userStorage.getUser(id);
     }
 
+    public void deleteUser(Long userId) {
+        if (getUser(userId) == null) {
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
+        }
+        log.info("Удален фильм с id: {}", userId);
+        userStorage.deleteUser(userId);
+    }
+
     public void addFriend(Long userId, Long friendId) {
-        User user = userStorage.getUser(userId);
-        User friend = userStorage.getUser(friendId);
-        user.addFriend(friendId);
-        friend.addFriend(userId);
+        checkUser(userId, friendId);
+        userStorage.addFriend(userId, friendId);
         log.info("'{}' добавил '{}' в список друзей", userId, friendId);
     }
 
     public List<User> getFriends(Long userId) {
-        User user = userStorage.getUser(userId);
-        Set<Long> friends = user.getFriends();
-        if (friends.isEmpty()) {
-            throw new NotFoundException("Список друзей пользователя с id '" + userId + "' пуст");
-        }
-        return friends.stream()
-                .map(userStorage::getUser)
-                .collect(Collectors.toList());
+        List<User> result = userStorage.getFriends(userId);
+        log.info("друзья пользователя с id = " + userId + result);
+        return result;
     }
 
-    public List<User> getMutualFriends(Long userId, Long friendId) {
-        User user = userStorage.getUser(userId);
-        User friend = userStorage.getUser(friendId);
-        Set<Long> userFriends = user.getFriends();
-        Set<Long> friendFriends = friend.getFriends();
-        log.info("'{}' запросил список общих друзей '{}'", userId, friendId);
-        if (userFriends.stream().anyMatch(friendFriends::contains)) {
-            return userFriends.stream()
-                    .filter(friendFriends::contains)
-                    .map(userStorage::getUser).collect(Collectors.toList());
-        } else {
-            return List.of();
-        }
+    public List<User> getMutualFriends(Long user1Id, Long user2Id) {
+        checkUser(user1Id, user2Id);
+        List<User> result = userStorage.getCommonFriends(user1Id, user2Id);
+        log.info("Общие друзья пользователя с id " + " {} и {} {} ", user1Id, user2Id, result);
+        return result;
     }
 
-    public void removeFriend(Long userId, Long friendId) {
-        User user = userStorage.getUser(userId);
-        User friend = userStorage.getUser(friendId);
-        user.removeFriend(friendId);
-        friend.removeFriend(userId);
+    public void deleteFriend(Long userId, Long friendId) {
+        checkUser(userId, friendId);
+        userStorage.deleteFriend(userId, friendId);
+        log.info("Друг удален");
         log.info("'{}' удален '{}' из списка друзей", userId, friendId);
     }
-
-
 }
