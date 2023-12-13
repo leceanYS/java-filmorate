@@ -1,26 +1,43 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
-import org.hibernate.validator.constraints.Length;
-import ru.yandex.practicum.filmorate.validannotation.interfaces.DateTimeValidatorCustom;
+import lombok.Data;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
-@Value
+@Data
+@AllArgsConstructor
 @Builder(toBuilder = true)
 public class Film {
-    int id;
-    @NotBlank(message = "Title can not be empty") @NotNull
-    String name;
+
+    private Long id;
+    @NotBlank
+    private String name;
+    @Size(max = 200)
+    @NotBlank
+    private String description;
     @NotNull
-    @Length(max = 200, message = "Description should be less than 200 length")
-    String description;
-    @NotNull(message = "Release date is incorrect")
-    @DateTimeValidatorCustom(max = "28/12/1895", message = "Release date less than min release date")
-    LocalDate releaseDate;
-    @Positive(message = "Duration should be greater than 0")
-    int duration;
-    public static final LocalDate MIN_DATE = LocalDate.of(1895, 12, 28);
+    private LocalDate releaseDate;
+    @Positive
+    private int duration;
+    @JsonIgnore
+    private final Set<Long> likes = new HashSet<>();
+
+    public void addLike(Long userId) {
+        likes.add(userId);
+    }
+
+    public void removeLike(Long userId) {
+        likes.remove(userId);
+    }
+
+    public int getLikes() {
+        return likes.size();
+    }
+
 }
