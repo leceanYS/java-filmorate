@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -28,34 +27,36 @@ public class FilmService {
         }
     }
 
-    public Collection<Film> getFilms() {
-        log.info("GET. Пришел  запрос /films на получение списка фильмов");
-        Collection<Film> response = filmStorage.getFilms();
-        log.info("GET. Отправлен ответ /films на получение списка фильмов");
+    public List<Film> getFilms() {
+        log.info("Получение списка всех фильмов из БД");
+        List<Film> response = filmStorage.getFilms();
+        log.info("Из БД получено {} объектов", response.size());
         return response;
     }
 
     public Film addFilm(Film film) {
-        log.info("POST. Пришел  запрос /films с телом: {}", film);
+        log.info("Добавление фильма в БД");
         validate(film);
         Film response = filmStorage.addFilm(film);
-        log.info("POST. Отправлен ответ /films с телом: {}", response);
+        log.info("Фильм '{}' успешно добавлен", response.getName());
         return response;
     }
 
     public Film updateFilm(Film film) {
-        log.info("PUT. Пришел запрос /films с телом: {}", film);
+        log.info("Обновление фильма с id {}", film.getId());
         validate(film);
         Film response = filmStorage.updateFilm(film);
-        log.info("PUT. Отправлен ответ /films с телом: {}", film);
+        log.info("Обновление фильма с id {} успешно завершено", film.getId());
         return response;
     }
 
     public void deleteFilm(Long filmId) {
+        log.info("Поиск фильма в БД с id {}", filmId);
         if (getFilm(filmId) == null) {
             throw new NotFoundException("Фильм с id = " + filmId + " не найден");
         }
-        log.info("Удален фильм с id: {}", filmId);
+        log.info("Фильм с id {} найден", filmId);
+        log.info("Фильм с id {} успешно удален", filmId);
         filmStorage.deleteFilm(filmId);
     }
 
@@ -65,31 +66,26 @@ public class FilmService {
     }
 
     public void like(Long filmId, Long userId) {
-        Film film = filmStorage.getFilm(filmId);
-        if (film != null) {
-            if (userService.getUser(userId) != null) {
-                filmStorage.like(filmId, userId);
-                log.info("Лайк добавлен");
-            } else {
-                throw new NotFoundException("пользователь с id = " + userId + " не найден");
-            }
-        } else {
+        if (filmStorage.getFilm(filmId) == null) {
             throw new NotFoundException("Фильм с id  = " + filmId + " не найден");
         }
+        if (userService.getUser(userId) == null) {
+            throw new NotFoundException("пользователь с id = " + userId + " не найден");
+        }
+        filmStorage.like(filmId, userId);
+        log.info("Лайк фильму: {} от пользователя: {} добавлен", filmId, userId);
     }
 
     public void disLike(Long filmId, Long userId) {
-        Film film = filmStorage.getFilm(filmId);
-        if (film != null) {
-            if (userService.getUser(userId) != null) {
-                filmStorage.disLike(filmId, userId);
-                log.info("Лайк удален");
-            } else {
-                throw new NotFoundException("пользователь с id = " + userId + " не найден");
-            }
-        } else {
+        log.info("удаление лайка фильму с id {} пользователем {}", filmId, userId);
+        if (filmStorage.getFilm(filmId) == null) {
             throw new NotFoundException("Фильм с id  " + filmId + " не найден");
         }
+        if (userService.getUser(userId) == null) {
+            throw new NotFoundException("пользователь с id = " + userId + " не найден");
+        }
+        filmStorage.disLike(filmId, userId);
+        log.info("Дизлайк фильму: {} от пользователя: {} добавлен", filmId, userId);
     }
 
     public List<Film> getFirstMostPopularFilms(Integer count) {

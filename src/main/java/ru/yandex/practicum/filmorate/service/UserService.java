@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
-import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -32,30 +31,31 @@ public class UserService {
         userStorage.getUser(friendId);
     }
 
-    public Collection<User> getUsers() {
-        log.info("GET. Пришел  запрос /users на получение списка пользователей");
-        Collection<User> response = userStorage.getUsers();
-        log.info("GET. Отправлен ответ /users на получение списка пользователей");
+    public List<User> getUsers() {
+        log.info("Получение списка всех пользователей из БД");
+        List<User> response = userStorage.getUsers();
+        log.info("Из БД получено {} объектов", response.size());
         return response;
     }
 
     public User addUser(User user) {
-        log.info("POST. Пришел  запрос /users с телом: {}", user);
+        log.info("Добавление пользователя в БД");
         validate(user);
         User response = userStorage.addUser(user);
-        log.info("POST. Отправлен ответ /users с телом: {}", user);
+        log.info("Пользователь '{}' успешно добавлен", response.getName());
         return response;
     }
 
     public User updateUser(User user) {
-        log.info("PUT. Пришел  запрос /users с телом: {}", user);
+        log.info("Обновление пользователя с id {}", user.getId());
         validate(user);
         User response = userStorage.updateUser(user);
-        log.info("PUT. Отправлен ответ /users с телом: {}", user);
+        log.info("Обновление пользователя с id {} успешно завершено", user.getId());
         return response;
     }
 
     public User getUser(Long id) {
+        log.info("Запрошен пользователь с id = " + id);
         return userStorage.getUser(id);
     }
 
@@ -63,7 +63,7 @@ public class UserService {
         if (getUser(userId) == null) {
             throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
-        log.info("Удален фильм с id: {}", userId);
+        log.info("Удален пользователь с id: {}", userId);
         userStorage.deleteUser(userId);
     }
 

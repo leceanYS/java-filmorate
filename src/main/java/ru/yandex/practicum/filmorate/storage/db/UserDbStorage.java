@@ -25,20 +25,20 @@ public class UserDbStorage implements UserStorage {
         Map<String, Object> keys = new SimpleJdbcInsert(this.jdbcTemplate)
                 .withTableName("users")
                 .usingColumns("user_name", "login", "email", "birthday")
-                .usingGeneratedKeyColumns("user_id")
+                .usingGeneratedKeyColumns("id")
                 .executeAndReturnKeyHolder(Map.of(
                         "user_name", user.getName(),
                         "login", user.getLogin(),
                         "email", user.getEmail(),
                         "birthday", java.sql.Date.valueOf(user.getBirthday())))
                 .getKeys();
-        //user.setId((Long) keys.get("user_id"));
-        user.setId(((Integer) keys.get("user_id")).longValue());
+        //user.setId((Long) keys.get("id"));
+        user.setId(((Integer) keys.get("id")).longValue());
         return user;
     }
 
     @Override
-    public Collection<User> getUsers() {
+    public List<User> getUsers() {
         String sqlQuery = "SELECT * FROM users";
         SqlRowSet srs = jdbcTemplate.queryForRowSet(sqlQuery);
         List<User> users = new ArrayList<>();
@@ -50,7 +50,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User getUser(Long userId) {
-        String sqlQuery = "SELECT * FROM users WHERE user_id = ?";
+        String sqlQuery = "SELECT * FROM users WHERE id = ?";
         SqlRowSet srs = jdbcTemplate.queryForRowSet(sqlQuery, userId);
         if (srs.next()) {
             return userMap(srs);
@@ -67,16 +67,16 @@ public class UserDbStorage implements UserStorage {
                 + "login = ?, "
                 + "email = ?, "
                 + "birthday = ? "
-                + "WHERE user_id = ?";
+                + "WHERE id = ?";
         jdbcTemplate.update(sqlQuery, user.getName(), user.getLogin(),
                 user.getEmail(), user.getBirthday(), user.getId());
         return user;
     }
 
     @Override
-    public String deleteUser(Long userId) {
-        String sqlQuery = "Удален пользователь с id = " + userId;
-        return sqlQuery;
+    public void deleteUser(Long userId) {
+        String sqlQuery = "DELETE FROM users WHERE id = " + userId;
+        jdbcTemplate.update(sqlQuery, Long.valueOf(userId).intValue());
     }
 
     @Override
@@ -95,7 +95,7 @@ public class UserDbStorage implements UserStorage {
     public List<User> getFriends(Long userId) {
         List<User> friends = new ArrayList<>();
         String sqlQuery = "SELECT * FROM users "
-                + "WHERE users.user_id IN (SELECT friend_id from friends "
+                + "WHERE users.id IN (SELECT friend_id from friends "
                 + "WHERE user_id = ?)";
         SqlRowSet srs = jdbcTemplate.queryForRowSet(sqlQuery, userId);
         while (srs.next()) {
@@ -107,7 +107,7 @@ public class UserDbStorage implements UserStorage {
     public List<User> getCommonFriends(Long friend1, Long friend2) {
         List<User> commonFriends = new ArrayList<>();
         String sqlQuery = "SELECT * FROM users "
-                + "WHERE users.user_id IN (SELECT friend_id from friends "
+                + "WHERE users.id IN (SELECT friend_id from friends "
                 + "WHERE user_id IN (?, ?) "
                 + "AND friend_id NOT IN (?, ?))";
         SqlRowSet srs = jdbcTemplate.queryForRowSet(sqlQuery, friend1, friend2, friend1, friend2);
@@ -118,7 +118,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     private static User userMap(SqlRowSet srs) {
-        Long id = srs.getLong("user_id");
+        Long id = srs.getLong("id");
         String name = srs.getString("user_name");
         String login = srs.getString("login");
         String email = srs.getString("email");

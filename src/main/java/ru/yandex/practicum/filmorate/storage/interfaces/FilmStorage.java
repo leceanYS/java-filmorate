@@ -3,14 +3,14 @@ package ru.yandex.practicum.filmorate.storage.interfaces;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 public interface FilmStorage extends LikesStorage {
 
     Film addFilm(Film film);
 
-    Collection<Film> getFilms();
+    List<Film> getFilms();
 
     Film getFilm(Long id);
 
@@ -18,6 +18,6 @@ public interface FilmStorage extends LikesStorage {
 
     void addGenre(Long filmId, Set<Genre> genres);
 
-    String deleteFilm(Long id);
+    void deleteFilm(Long id);
 
 }

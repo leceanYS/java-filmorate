@@ -26,7 +26,7 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Genre getGenre(Long genreId) {
-        String sqlQuery = "SELECT * FROM genres WHERE genre_id = ?";
+        String sqlQuery = "SELECT * FROM genres WHERE id = ?";
         SqlRowSet srs = jdbcTemplate.queryForRowSet(sqlQuery, Long.valueOf(genreId).intValue());
         if (srs.next()) {
             return new Genre(genreId, srs.getString("genre_name"));
@@ -40,7 +40,7 @@ public class GenreDbStorage implements GenreStorage {
         String sqlQuery = "SELECT * FROM genres ";
         SqlRowSet srs = jdbcTemplate.queryForRowSet(sqlQuery);
         while (srs.next()) {
-            genres.add(new Genre(srs.getLong("genre_id"), srs.getString("genre_name")));
+            genres.add(new Genre(srs.getLong("id"), srs.getString("genre_name")));
         }
         return genres;
     }

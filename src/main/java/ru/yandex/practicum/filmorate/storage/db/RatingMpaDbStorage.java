@@ -18,7 +18,7 @@ public class RatingMpaDbStorage {
     private final JdbcTemplate jdbcTemplate;
 
     public RatingMpa getMpaRating(int ratingId) {
-        String sqlQuery = "SELECT * FROM rating_mpa WHERE rating_id = ?";
+        String sqlQuery = "SELECT * FROM rating_mpa WHERE mpa_id = ?";
         SqlRowSet srs = jdbcTemplate.queryForRowSet(sqlQuery, ratingId);
         if (srs.next()) {
             return new RatingMpa((long)ratingId, srs.getString("rating_name"));
@@ -31,7 +31,7 @@ public class RatingMpaDbStorage {
         String sqlQuery = "SELECT * FROM rating_mpa";
         SqlRowSet srs = jdbcTemplate.queryForRowSet(sqlQuery);
         while (srs.next()) {
-            ratingsMpa.add(new RatingMpa(srs.getLong("rating_id"), srs.getString("rating_name")));
+            ratingsMpa.add(new RatingMpa(srs.getLong("mpa_id"), srs.getString("rating_name")));
         }
         return ratingsMpa;
     }
