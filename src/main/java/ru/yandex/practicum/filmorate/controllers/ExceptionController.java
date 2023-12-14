@@ -28,7 +28,7 @@ public class ExceptionController {
         log.error("400 {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
-///
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleAlreadyExistException(final DataAlreadyExistException e) {
