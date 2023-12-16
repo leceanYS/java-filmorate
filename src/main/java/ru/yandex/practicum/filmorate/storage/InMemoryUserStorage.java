@@ -1,64 +1,94 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exceptions.AlreadyExistException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@Slf4j
+
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    private final Map<Long, User> users = new HashMap<>();
-    private Long id = 0L;
+    private final Map<Integer, User> users = new HashMap<>();
 
-    private Long generateId() {
-        return ++id;
-    }
 
     @Override
-    public User addUser(User user) {
-        user.setId(generateId());
-        users.put(user.getId(), user);
-        log.info("Пользователь '{}' добавлен в хранилище с id '{}'", user.getName(), user.getId());
-        return user;
-    }
-
-    @Override
-    public List<User> getUsers() {
-        log.info("Всего пользователей '{}'", users.size());
-        return new ArrayList<>(users.values());
-    }
-
-    @Override
-    public User getUser(Long id) {
-        log.info("Поиск пользователя с id '{}'", users.size());
-        if (!users.containsKey(id)) {
-            throw new NotFoundException("Пользователя с id " + id + " не найдено");
+    public User getUser(Integer id) {
+        if (users.containsKey(id)) {
+            return users.get(id);
+        } else {
+            throw new NotFoundException("User not found");
         }
-        return users.get(id);
     }
 
     @Override
     public User updateUser(User user) {
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
-            log.info("Пользователь '{}' с id '{}' обновлен", user.getName(), user.getId());
             return user;
         } else {
-            throw new NotFoundException("Пользователя с id " + user.getId() + " не найдено");
+            throw new NotFoundException("User not found");
         }
     }
 
     @Override
-    public void deleteUsers() {
-        users.clear();
-        log.info("Все пользователи удалены");
+    public List<User> getAllUsers() {
+        return new ArrayList<>(users.values());
     }
 
+    @Override
+    public User createUser(User user) {
+        if (users.containsKey(user.getId())) {
+            throw new AlreadyExistException("User already exist in storage");
+        } else {
+            users.put(user.getId(), user);
+            return user;
+        }
+    }
+
+    @Override
+    public List<User> getFriendsList(int userId) {
+        return getUser(userId)
+                .getFriends()
+                .stream()
+                .map(this::getUser)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public User addNewFriend(int userId1, int userId2) {
+        getUser(userId1).getFriends().add(getUser(userId2).getId());
+        getUser(userId2).getFriends().add(getUser(userId1).getId());
+        return getUser(userId2);
+    }
+
+    @Override
+    public User removeFriend(int userId1, int userId2) {
+        getUser(userId1).getFriends().remove(getUser(userId2).getId());
+        getUser(userId2).getFriends().remove(getUser(userId1).getId());
+        return getUser(userId1);
+    }
+
+    @Override
+    public List<User> getMutualFriendsList(int userId1, int userId2) {
+        Set<Integer> allFriendsFirstUser = getFriendsList(userId1).stream()
+                .map(User::getId)
+                .collect(Collectors.toSet());
+        Set<Integer> allFriendsSecondUser = getFriendsList(userId2)
+                .stream()
+                .map(User::getId)
+                .collect(Collectors.toSet());
+        if (allFriendsSecondUser == null) {
+            return new ArrayList<>();
+        } else {
+            allFriendsFirstUser.retainAll(allFriendsSecondUser);
+            return allFriendsFirstUser.stream()
+                    .map(this::getUser)
+                    .collect(Collectors.toList());
+        }
+    }
 }

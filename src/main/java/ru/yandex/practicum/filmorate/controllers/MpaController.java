@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.service.GenreService;
+import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.service.MpaService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -20,22 +20,20 @@ import java.util.List;
         @ApiResponse(responseCode = "500", description = "Server error")
 })
 @RequiredArgsConstructor
-@RequestMapping("/genres")
-public class GenreController {
-    private final GenreService genreService;
+@RequestMapping("/mpa")
+public class MpaController {
+    private final MpaService mpaService;
 
-    @Operation(summary = "Получение жанра")
+    @Operation(summary = "Получение рейтинга")
+    @ApiResponse(responseCode = "400", description = "Mpa not found")
     @GetMapping("/{id}")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Genre not found")
-    })
-    public Genre getGenre(@Valid @PathVariable Integer id) {
-        return genreService.getGenre(id);
+    public Mpa getMpa(@Valid @PathVariable Integer id) {
+        return mpaService.getMpa(id);
     }
 
-    @Operation(summary = "Получение всех жанров")
+    @Operation(summary = "Получение всех рейтингов")
     @GetMapping
-    public List<Genre> getAllGenre() {
-        return genreService.getAllGenre();
+    public List<Mpa> getAllMpa() {
+        return mpaService.getAllMpa();
     }
 }

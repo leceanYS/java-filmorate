@@ -1,44 +1,27 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
-@Data
-@AllArgsConstructor
+@Value
 @Builder(toBuilder = true)
 public class User {
-
-    private Long id;
-    @NotBlank
-    @Email
-    private String email;
-    @NotBlank(message = "Поле login не может содержать пробелы")
-    private String login;
-    private String name;
-    @PastOrPresent
-    private LocalDate birthday;
+    int id;
+    @Email(message = "Email is incorrect")
+    String email;
+    @NotBlank(message = "Login must should not be empty")
+    String login;
+    @Builder.Default
+    String name = "";
+    @Past(message = "Birthday must should be less than today")
+    LocalDate birthday;
     @JsonIgnore
-    private final Set<Long> friends = new HashSet<>();
-
-    public void addFriend(Long id) {
-        friends.add(id);
-    }
-
-    public void removeFriend(Long id) {
-        friends.remove(id);
-    }
-
-    public int getAllFriends() {
-        return friends.size();
-    }
-
+    Set<Integer> friends;
 }

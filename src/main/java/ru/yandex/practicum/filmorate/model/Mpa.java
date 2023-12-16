@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @Getter
 @Value
-public class Genre {
+public class Mpa {
     @NotNull(message = "Only number")
     int id;
     String name;

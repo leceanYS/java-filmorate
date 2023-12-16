@@ -1,64 +1,76 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exceptions.AlreadyExistException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private final Map<Long, Film> films = new HashMap<>();
-    private Long id = 0L;
-
-    private Long generateId() {
-        return ++id;
-    }
+    private final Map<Integer, Film> films = new HashMap<>();
 
     @Override
-    public Film addFilm(Film film) {
-        film.setId(generateId());
-        films.put(film.getId(), film);
-        log.info("Фильм '{}' добавлен в хранилище с id '{}'", film.getName(), film.getId());
-        return film;
-    }
-
-    @Override
-    public List<Film> getFilms() {
-        log.info("В хранилище '{}' фильмов", films.size());
-        return new ArrayList<>(films.values());
-    }
-
-    @Override
-    public Film getFilm(Long id) {
-        log.info("Из хранилища запрошен фильм с id '{}'", films.size());
-        if (!films.containsKey(id)) {
-            throw new NotFoundException("В хранилище нет фильма с id " + id);
+    public Film getFilm(Integer id) {
+        if (films.containsKey(id)) {
+            return films.get(id);
+        } else {
+            throw new NotFoundException("Film not found");
         }
-        return films.get(id);
     }
 
     @Override
     public Film updateFilm(Film film) {
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
-            log.info("Фильм '{}' с id '{}' обновлен", film.getName(), film.getId());
             return film;
         } else {
-            throw new NotFoundException("В хранилище нет фильма с id " + film.getId());
+            throw new NotFoundException("Film not found");
+        }
+
+    }
+
+    @Override
+    public List<Film> getAllFilms() {
+        return new ArrayList<>(films.values());
+    }
+
+    @Override
+    public Film createFilm(Film film) {
+        if (films.containsKey(film.getId())) {
+            throw new AlreadyExistException("Film already exist in storage");
+        } else {
+            films.put(film.getId(), film);
+            return film;
         }
     }
 
     @Override
-    public void deleteFilms() {
-        films.clear();
-        log.info("Хранилище фильмов очищено");
+    public Film addLike(int filmId, User user) {
+        Film filmToUpdate = getFilm(filmId);
+        Set<Integer> users = filmToUpdate.getLikes();
+        users.add(user.getId());
+        return updateFilm(filmToUpdate.toBuilder().likes(users).build());
     }
 
+    @Override
+    public Film removeLike(int filmId, User user) {
+        Film filmToUpdate = getFilm(filmId);
+        Set<Integer> users = filmToUpdate.getLikes();
+        users.remove(user.getId());
+        return updateFilm(filmToUpdate.toBuilder().likes(users).build());
+    }
+
+    @Override
+    public List<Film> getSortedFilm(int count) {
+        return films.values().stream()
+                .sorted(Comparator.comparing(f -> f.getLikes().size(), Comparator.reverseOrder()))
+                .limit(count)
+                .collect(Collectors.toList());
+    }
 }
