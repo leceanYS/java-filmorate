@@ -31,20 +31,20 @@ class FilmStorageTest {
     private final FilmDbStorage filmDbStorage;
 
     User user = User.builder()
-            .login("Evgeny")
+            .login("Yury")
             .birthday(LocalDate.of(1999, 5, 22))
-            .name("Evgeny")
+            .name("Yury")
             .email("example@yandex.ru")
             .build();
     User user1 = User.builder()
-            .login("Evgeny1")
+            .login("Yury1")
             .birthday(LocalDate.of(1999, 5, 20))
-            .name("Evgeny1")
+            .name("Yury1")
             .email("example1@yandex.ru")
             .build();
 
     User user2 = User.builder()
-            .login("Evgeny2")
+            .login("Yury2")
             .birthday(LocalDate.of(1999, 5, 2))
             .email("example2@yandex.ru")
             .build();
