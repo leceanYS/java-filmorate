@@ -19,9 +19,6 @@ import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
-
-
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -29,6 +26,7 @@ import static org.assertj.core.api.Assertions.*;
 class FilmStorageTest {
     private final UserDbStorage userDbStorage;
     private final FilmDbStorage filmDbStorage;
+
 
     User user = User.builder()
             .login("Yury")
