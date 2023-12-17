@@ -31,9 +31,9 @@ class UserControllerTest {
     @Autowired
     ObjectMapper objectMapper;
     User user = User.builder()
-            .login("Evgeny")
+            .login("Yury")
             .birthday(LocalDate.of(1999, 5, 22))
-            .name("Evgeny")
+            .name("Yury")
             .email("example@yandex.ru")
             .friends(new HashSet<>())
             .build();
@@ -89,7 +89,7 @@ class UserControllerTest {
                 .accept(MediaType.APPLICATION_JSON));
         User updateUser = user.toBuilder()
                 .id(1)
-                .name("Jenya")
+                .name("Yuriy")
                 .email("example@gmail.com")
                 .birthday(LocalDate.EPOCH)
                 .login("Wcobq")
