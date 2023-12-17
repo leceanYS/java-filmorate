@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.yandex.practicum.filmorate.exceptions.AlreadyExistException;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.AlreadyExistException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -19,6 +19,9 @@ import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.*;
+
+
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -27,22 +30,21 @@ class FilmStorageTest {
     private final UserDbStorage userDbStorage;
     private final FilmDbStorage filmDbStorage;
 
-
     User user = User.builder()
-            .login("Yury")
+            .login("Evgeny")
             .birthday(LocalDate.of(1999, 5, 22))
-            .name("Yury")
+            .name("Evgeny")
             .email("example@yandex.ru")
             .build();
     User user1 = User.builder()
-            .login("Yury1")
+            .login("Evgeny1")
             .birthday(LocalDate.of(1999, 5, 20))
-            .name("Yury1")
+            .name("Evgeny1")
             .email("example1@yandex.ru")
             .build();
 
     User user2 = User.builder()
-            .login("Yury2")
+            .login("Evgeny2")
             .birthday(LocalDate.of(1999, 5, 2))
             .email("example2@yandex.ru")
             .build();
