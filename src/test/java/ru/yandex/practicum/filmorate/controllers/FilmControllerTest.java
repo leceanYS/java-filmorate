@@ -44,8 +44,8 @@ class FilmControllerTest {
             .id(1)
             .name("The Man From Earth")
             .releaseDate(LocalDate.of(2007, 2, 14))
-            .description("It stars David Lee Smith as John Oldman, a " +
-                    "departing university professor, who puts forth the notion that he is more than 14,000 years old.")
+            .description("The futuristic Westworld amusement park has specially designed" +
+                    "androids fulfill every whim of visitors, so that I feel impunity and complete freedom")
             .duration(87)
             .mpa(mpa)
             .genres(new ArrayList<>())
