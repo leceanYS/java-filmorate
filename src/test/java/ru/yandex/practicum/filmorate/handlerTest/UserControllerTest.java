@@ -25,9 +25,9 @@ public class UserControllerTest {
 
         User user = User.builder()
                 .id(1L)
-                .email("ivan.ya.ru")
-                .login("ivan123")
-                .name("Иван")
+                .email("yury.ya.ru")
+                .login("yury123")
+                .name("Юрий")
                 .birthday(LocalDate.now().minusYears(30))
                 .build();
 
@@ -41,9 +41,9 @@ public class UserControllerTest {
 
         User user = User.builder()
                 .id(1L)
-                .email("ivan@ya.ru")
+                .email("yury@ya.ru")
                 .login(" ")
-                .name("Иван")
+                .name("Юрий")
                 .birthday(LocalDate.now().minusYears(30))
                 .build();
 
@@ -57,9 +57,9 @@ public class UserControllerTest {
 
         User user = User.builder()
                 .id(1L)
-                .email("ivan@ya.ru")
-                .login("ivan123")
-                .name("Иван")
+                .email("yury@ya.ru")
+                .login("yury123")
+                .name("Юрий")
                 .birthday(LocalDate.now().plusYears(1))
                 .build();
 
@@ -73,9 +73,9 @@ public class UserControllerTest {
 
         User firstUser = User.builder()
                 .id(1L)
-                .email("ivan@ya.ru")
-                .login("ivan123")
-                .name("Иван")
+                .email("yury@ya.ru")
+                .login("yury123")
+                .name("Юрий")
                 .birthday(LocalDate.now().plusYears(1))
                 .build();
 
@@ -83,9 +83,9 @@ public class UserControllerTest {
 
         User secondUser = User.builder()
                 .id(1L)
-                .email("ivan@ya.ru")
+                .email("yury@ya.ru")
                 .login("")
-                .name("Иван")
+                .name("Юрий")
                 .birthday(LocalDate.now().plusYears(1))
                 .build();
 

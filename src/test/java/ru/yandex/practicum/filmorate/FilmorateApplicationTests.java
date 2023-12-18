@@ -97,9 +97,9 @@ class FilmorateApplicationTests {
 
 		User firstUser = User.builder()
 				.id(1L)
-				.name("Иван")
-				.login("ivan")
-				.email("ivan@yandex.ru")
+				.name("Юрий")
+				.login("yury")
+				.email("yury@yandex.ru")
 				.birthday(LocalDate.now().minusYears(50))
 				.build();
 
