@@ -1,16 +1,21 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Value;
+import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 
-@Builder
-@Getter
-@Value
+@Data
+@AllArgsConstructor
+@Builder(toBuilder = true)
 public class Genre {
-    @NotNull(message = "Only number")
-    int id;
-    String name;
+
+    @Positive
+    protected Long id;
+
+    @NotBlank
+    protected String name;
+
 }

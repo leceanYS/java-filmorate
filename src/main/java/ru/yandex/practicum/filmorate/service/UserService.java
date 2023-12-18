@@ -1,57 +1,95 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
-import javax.validation.constraints.NotNull;
-import java.util.HashSet;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    @Qualifier("userDbStorage")
-    @NotNull
+
     private final UserStorage userStorage;
 
-    public List<User> getAllUser() {
-        return userStorage.getAllUsers();
+    public UserStorage getUserStorage() {
+        return userStorage;
     }
 
-    public User getUser(Integer userId) {
-        return userStorage.getUser(userId);
+    private void validate(User user) {
+        if ((user.getName() == null) || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
     }
 
-    public User createUser(User user) {
-        return userStorage.createUser(user.toBuilder()
-                .name((user.getName() == null || user.getName().isBlank()) ? user.getLogin() : user.getName())
-                .friends(new HashSet<>())
-                .build());
+    private void checkUser(Long userId, Long friendId) {
+        userStorage.getUser(userId);
+        userStorage.getUser(friendId);
+    }
+
+    public List<User> getUsers() {
+        log.info("Получение списка всех пользователей из БД");
+        List<User> response = userStorage.getUsers();
+        log.info("Из БД получено {} объектов", response.size());
+        return response;
+    }
+
+    public User addUser(User user) {
+        log.info("Добавление пользователя в БД");
+        validate(user);
+        User response = userStorage.addUser(user);
+        log.info("Пользователь '{}' успешно добавлен", response.getName());
+        return response;
     }
 
     public User updateUser(User user) {
-        User oldUser = userStorage.getUser(user.getId());
-        return userStorage.updateUser(user.toBuilder()
-                .friends(oldUser.getFriends())
-                .build());
+        log.info("Обновление пользователя с id {}", user.getId());
+        validate(user);
+        User response = userStorage.updateUser(user);
+        log.info("Обновление пользователя с id {} успешно завершено", user.getId());
+        return response;
     }
 
-    public List<User> getFriendsList(int userId) {
-        return userStorage.getFriendsList(userId);
+    public User getUser(Long id) {
+        log.info("Запрошен пользователь с id = " + id);
+        return userStorage.getUser(id);
     }
 
-    public List<User> getMutualFriendsList(int userId1, int userId2) {
-        return userStorage.getMutualFriendsList(userId1, userId2);
+    public void deleteUser(Long userId) {
+        if (getUser(userId) == null) {
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
+        }
+        log.info("Удален пользователь с id: {}", userId);
+        userStorage.deleteUser(userId);
     }
 
-    public User addNewFriend(int userId1, int userId2) {
-        return userStorage.addNewFriend(userId1, userId2);
+    public void addFriend(Long userId, Long friendId) {
+        checkUser(userId, friendId);
+        userStorage.addFriend(userId, friendId);
+        log.info("'{}' добавил '{}' в список друзей", userId, friendId);
     }
 
-    public User removeFriend(int userId1, int userId2) {
-        return userStorage.removeFriend(userId1, userId2);
+    public List<User> getFriends(Long userId) {
+        List<User> result = userStorage.getFriends(userId);
+        log.info("друзья пользователя с id = " + userId + result);
+        return result;
+    }
+
+    public List<User> getMutualFriends(Long user1Id, Long user2Id) {
+        checkUser(user1Id, user2Id);
+        List<User> result = userStorage.getCommonFriends(user1Id, user2Id);
+        log.info("Общие друзья пользователя с id " + " {} и {} {} ", user1Id, user2Id, result);
+        return result;
+    }
+
+    public void deleteFriend(Long userId, Long friendId) {
+        checkUser(userId, friendId);
+        userStorage.deleteFriend(userId, friendId);
+        log.info("Друг удален");
+        log.info("'{}' удален '{}' из списка друзей", userId, friendId);
     }
 }

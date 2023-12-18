@@ -1,24 +1,23 @@
 package ru.yandex.practicum.filmorate.storage.interfaces;
 
-
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.List;
+import java.util.Set;
 
-public interface FilmStorage {
+public interface FilmStorage extends LikesStorage {
 
-    Film getFilm(Integer id);
+    Film addFilm(Film film);
+
+    List<Film> getFilms();
+
+    Film getFilm(Long id);
 
     Film updateFilm(Film film);
 
-    List<Film> getAllFilms();
+    void addGenre(Long filmId, Set<Genre> genres);
 
-    Film createFilm(Film film);
+    void deleteFilm(Long id);
 
-    Film addLike(int filmId, User user);
-
-    Film removeLike(int filmId, User user);
-
-    List<Film> getSortedFilm(int count);
 }
