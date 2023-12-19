@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser( User user) throws NotFoundException {
+    public User updateUser(User user) throws NotFoundException {
         log.info("Пришел PUT запрос /users с телом {}", user);
         User response = userService.updateUser(user);
         log.info("Отправлен ответ PUT /users с телом: {}", response);
