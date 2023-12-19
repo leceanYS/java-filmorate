@@ -92,6 +92,6 @@ public class UserControllerTest {
         HttpEntity<User> entity = new HttpEntity<>(secondUser);
         ResponseEntity<User> secondResponse = restTemplate.exchange("/users", HttpMethod.PUT, entity, User.class);
 
-        assertEquals("400 NOT_FOUND", secondResponse.getStatusCode().toString());
+        assertEquals("404 NOT_FOUND", secondResponse.getStatusCode().toString());
     }
 }
