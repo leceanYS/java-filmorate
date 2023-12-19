@@ -52,9 +52,6 @@ public class FilmService {
 
     public void deleteFilm(Long filmId) {
         log.info("Поиск фильма в БД с id {}", filmId);
-        if (getFilm(filmId) == null) {
-            throw new NotFoundException("Фильм с id = " + filmId + " не найден");
-        }
         log.info("Фильм с id {} найден", filmId);
         log.info("Фильм с id {} успешно удален", filmId);
         filmStorage.deleteFilm(filmId);
@@ -66,24 +63,12 @@ public class FilmService {
     }
 
     public void like(Long filmId, Long userId) {
-        if (filmStorage.getFilm(filmId) == null) {
-            throw new NotFoundException("Фильм с id  = " + filmId + " не найден");
-        }
-        if (userService.getUser(userId) == null) {
-            throw new NotFoundException("пользователь с id = " + userId + " не найден");
-        }
         filmStorage.like(filmId, userId);
         log.info("Лайк фильму: {} от пользователя: {} добавлен", filmId, userId);
     }
 
     public void disLike(Long filmId, Long userId) {
         log.info("удаление лайка фильму с id {} пользователем {}", filmId, userId);
-        if (filmStorage.getFilm(filmId) == null) {
-            throw new NotFoundException("Фильм с id  " + filmId + " не найден");
-        }
-        if (userService.getUser(userId) == null) {
-            throw new NotFoundException("пользователь с id = " + userId + " не найден");
-        }
         filmStorage.disLike(filmId, userId);
         log.info("Дизлайк фильму: {} от пользователя: {} добавлен", filmId, userId);
     }
