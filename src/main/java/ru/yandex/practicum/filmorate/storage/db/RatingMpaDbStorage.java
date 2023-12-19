@@ -16,12 +16,14 @@ import java.util.List;
 public class RatingMpaDbStorage {
 
     private final JdbcTemplate jdbcTemplate;
+
     private RatingMpa mapRowToRatingMpa(SqlRowSet rowSet) {
         Long ratingId = rowSet.getLong("mpa_id");
         String ratingName = rowSet.getString("rating_name");
 
         return new RatingMpa(ratingId, ratingName);
     }
+
     public RatingMpa getMpaRating(int ratingId) {
         String sqlQuery = "SELECT * FROM rating_mpa WHERE mpa_id = ?";
         SqlRowSet srs = jdbcTemplate.queryForRowSet(sqlQuery, ratingId);
