@@ -27,7 +27,6 @@ public class Film {
     private Set<Genre> genres;
     @NotNull
     private RatingMpa mpa;
-    @NotNull
     @JsonIgnore
     private final Set<Long> likes;
 
