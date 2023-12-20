@@ -72,8 +72,6 @@ public class FilmController {
         filmService.disLike(id, userId);
     }
 
-    @Positive
-    @Validated
     @GetMapping("/popular")
     public List<Film> getPopularMovies(@RequestParam(defaultValue = "10") Integer count) {
         log.info("Пришел GET запрос /popular");
