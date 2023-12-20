@@ -1,30 +1,28 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.db.GenreDbStorage;
+import ru.yandex.practicum.filmorate.storage.dao.GenreDbStorage;
 
-import java.util.List;
+import java.util.*;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
+@Slf4j
 public class GenreService {
-
     private final GenreDbStorage genreDbStorage;
 
-    public Genre getGenre(Long id) {
-        Genre genre = genreDbStorage.getGenre(id);
-        if (genre == null) {
-            throw new NotFoundException("Жанр не найден");
-        }
-        return genre;
+    @Autowired
+    public GenreService(GenreDbStorage genreDbStorage) {
+        this.genreDbStorage = genreDbStorage;
     }
 
-    public List<Genre> getGenres() {
-        return genreDbStorage.getGenres();
+    public List<Genre> getAllGenres() {
+        return genreDbStorage.getAllGenres();
+    }
+
+    public Genre getGenreById(int id) {
+        return genreDbStorage.getGenreById(id);
     }
 }

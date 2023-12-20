@@ -1,81 +1,97 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.BadRequestException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.dao.LikesDbStorage;
+import ru.yandex.practicum.filmorate.validator.Validator;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
+@Slf4j
 public class FilmService {
-
     private final FilmStorage filmStorage;
-    private final UserService userService;
+    private final UserStorage userStorage;
+    private final LikesDbStorage likesDbStorage;
 
-    private void validate(Film film) {
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            throw new BadRequestException("Ошибка по минимальной дате релиза фильма," +
-                    "releaseDate не может быть меньше 28 декабря 1895 года");
-        }
-    }
-
-    public List<Film> getFilms() {
-        log.info("Получение списка всех фильмов из БД");
-        List<Film> response = filmStorage.getFilms();
-        log.info("Из БД получено {} объектов", response.size());
-        return response;
+    @Autowired
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("userDbStorage") UserStorage userStorage,
+                       LikesDbStorage likesDbStorage) {
+        this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
+        this.likesDbStorage = likesDbStorage;
     }
 
     public Film addFilm(Film film) {
-        log.info("Добавление фильма в БД");
-        validate(film);
-        Film response = filmStorage.addFilm(film);
-        log.info("Фильм '{}' успешно добавлен", response.getName());
-        return response;
+        Validator.validate(film);
+        Film newFilm = filmStorage.addFilm(film);
+        newFilm.setGenres(filmStorage.getFilmGenres(newFilm.getId()));
+        return newFilm;
+    }
+
+    public List<Film> getFilms() {
+        List<Film> films = filmStorage.getFilms();
+        for (Film film : films) {
+            film.setGenres(filmStorage.getFilmGenres(film.getId()));
+        }
+        return films;
+    }
+
+    public Film getFilm(int id) {
+        Film film = filmStorage.getFilm(id);
+        film.setGenres(filmStorage.getFilmGenres(id));
+        return film;
     }
 
     public Film updateFilm(Film film) {
-        log.info("Обновление фильма с id {}", film.getId());
-        validate(film);
-        Film response = filmStorage.updateFilm(film);
-        log.info("Обновление фильма с id {} успешно завершено", film.getId());
-        return response;
+        Validator.validate(film);
+        Film updatedFilm = filmStorage.updateFilm(film);
+        updatedFilm.setGenres(filmStorage.getFilmGenres(updatedFilm.getId()));
+        return updatedFilm;
     }
 
-    public void deleteFilm(Long filmId) {
-        log.info("Поиск фильма в БД с id {}", filmId);
-        log.info("Фильм с id {} найден", filmId);
-        log.info("Фильм с id {} успешно удален", filmId);
-        filmStorage.deleteFilm(filmId);
+    public void removeFilm(int filmId) {
+        filmStorage.removeFilm(filmId);
     }
 
-    public Film getFilm(Long id) {
-        log.info("Запрошен фильм с id = " + id);
-        return filmStorage.getFilm(id);
+    public List<User> getFilmLikes(int filmId) {
+        List<User> users = new ArrayList<>();
+        Set<Integer> usersId = filmStorage.getFilmLikes(filmId);
+        for (Integer id : usersId) {
+            users.add(userStorage.getUser(id).orElse(new User()));
+        }
+        return users;
     }
 
-    public void like(Long filmId, Long userId) {
-        filmStorage.like(filmId, userId);
-        log.info("Лайк фильму: {} от пользователя: {} добавлен", filmId, userId);
+    public void addLike(int filmId, int userId) {
+        likesDbStorage.addLike(filmId, userId);
+        log.info("Фильму [id {}] добавлен лайк пользователя [id {}].", filmId, userId);
     }
 
-    public void disLike(Long filmId, Long userId) {
-        log.info("удаление лайка фильму с id {} пользователем {}", filmId, userId);
-        filmStorage.disLike(filmId, userId);
-        log.info("Дизлайк фильму: {} от пользователя: {} добавлен", filmId, userId);
+    public void removeLike(int filmId, int userId) {
+        likesDbStorage.removeLike(filmId, userId);
+        log.info("Лайк фильма [id {}] пользователем [id {}] удалён.", filmId, userId);
     }
 
-    public List<Film> getFirstMostPopularFilms(Integer count) {
-        List<Film> result = new ArrayList<>(filmStorage.getPopular(count));
-        log.info("Запрос популярного фильма");
-        return result;
+    public void removeAllFilms() {
+        filmStorage.removeAllFilms();
     }
 
+    public List<Film> getMostlyPopularFilms(int count) {
+        List<Film> mostlyPopularFilms = filmStorage.getMostlyPopular(count);
+        for (Film film : mostlyPopularFilms) {
+            film.setGenres(filmStorage.getFilmGenres(film.getId()));
+        }
+        log.info("Список {} самых популярных фильмов: {}.", count, mostlyPopularFilms);
+        return mostlyPopularFilms;
+    }
 }

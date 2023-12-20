@@ -1,88 +1,99 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 
-@Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/users")
+@Slf4j
 public class UserController {
-
-    @Autowired
     private final UserService userService;
 
-    @GetMapping
-    public List<User> getUsers() {
-        log.info("Пришел GET запрос /users");
-        List<User> response = userService.getUsers();
-        log.info("Отправлен ответ GET /films с телом: {}", response);
-        return response;
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping
-    public User addUser(@RequestBody @Valid User user) {
-        log.info("Пришел POST запрос /users с телом {}", user);
+    @ResponseStatus(HttpStatus.CREATED)
+    public User addUser(@RequestBody User user) {
+        log.info("Принят запрос на добавление нового пользователя {}.", user);
         User response = userService.addUser(user);
-        log.info("Отправлен ответ POST /users с телом: {}", response);
+        log.info("Отправлен ответ на запрос добавления нового пользователя {}.", response);
         return response;
     }
 
-    @PutMapping
-    public User updateUser(@RequestBody @Valid User user) throws NotFoundException {
-        log.info("Пришел PUT запрос /users с телом {}", user);
-        User response = userService.updateUser(user);
-        log.info("Отправлен ответ PUT /users с телом: {}", response);
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<User> getUsers() {
+        log.info("Принят запрос на получение списка пользователей");
+        List<User> response = userService.getUsers();
+        log.info("Отправлен ответ на запрос получения списка пользователей, размером {} записей.", response.size());
         return response;
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id) {
-        log.info("Пришел GET запрос /users/{id}");
+    @ResponseStatus(HttpStatus.OK)
+    public User getUser(@PathVariable int id) {
+        log.info("Принят запрос на получение пользователя [id {}].", id);
         User response = userService.getUser(id);
-        log.info("Отправлен ответ GET /users/{id} с телом: {}", response);
+        log.info("Отправлен ответ на запрос получения пользователя [id {}]: {}.", id, response);
+        return response;
+    }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public User updateUser(@RequestBody User user) {
+        log.info("Принят запрос на обновление пользователя [id {}].", user.getId());
+        User response = userService.updateUser(user);
+        log.info("Отправлен ответ на запрос обновления пользователя [id {}]: {}.", response.getId(), response);
         return response;
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        log.info("Пришел DELETE запрос /users/{id} с параметром {}", id);
-        userService.deleteUser(id);
+    @ResponseStatus(HttpStatus.OK)
+    public void removeUser(@PathVariable int id) {
+        log.info("Принят запрос на удаление пользователя [id {}].", id);
+        userService.removeUser(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
-        log.info("Пришел PUT запрос users/{id}/friends/{friendId} с параметрами {} и {}", id, friendId);
+    @ResponseStatus(HttpStatus.OK)
+    public void addToFriends(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Получен запрос на добавление пользователя [id {}] в друзья к пользователю [id {}] .", friendId, id);
         userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
-        log.info("Пришел DELETE запрос users/{id}/friends/{friendId} с параметрами {} и {}", id, friendId);
-        userService.deleteFriend(id, friendId);
+    @ResponseStatus(HttpStatus.OK)
+    public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Получен запрос на удаление пользователя [id {}] из списка друзей пользователя [id {}].", friendId, id);
+        userService.removeFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getFriends(@PathVariable Long id) {
-        log.info("Пришел GET запрос /users/{id}/friends");
-        List<User> response = userService.getFriends(id);
-        log.info("Отправлен ответ GET /users/{id}/friends с телом: {}", response);
+    @ResponseStatus(HttpStatus.OK)
+    public List<User> getFriendList(@PathVariable int id) {
+        log.info("Получен запрос на получение списка друзей у пользователя [id {}].", id);
+        List<User> response = userService.getFriendList(id);
+        log.info("Отправлен ответ на запрос получения списка друзей у пользователя [id {}] размером {} записей: {}.",
+                id, response.size(),  response);
         return response;
     }
 
-    @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
-        log.info("Пришел GET запрос /users/{id}/friends/common/{otherId}");
-        List<User> response = userService.getMutualFriends(id, otherId);
-        log.info("Отправлен ответ GET /users/{id}/friends/common/{otherId} с телом: {}", response);
+    @GetMapping("{id}/friends/common/{otherId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<User> getCommonFriendsList(@PathVariable int id, @PathVariable int otherId) {
+        log.info("Получен запрос на получение списка общих друзей у пользователей [id {}] и [id {}].", id, otherId);
+        List<User> response = userService.getCommonFriendsList(id, otherId);
+        log.info("Отправлен ответ на запрос получения списка общих друзей у пользователей " +
+                "[id {}] и [id {}] размером {} записей: {}.", id, otherId, response.size(), response);
         return response;
     }
 }
