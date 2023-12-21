@@ -19,14 +19,14 @@ public class User {
     @NotBlank
     @Email
     private String email;
-    @NotBlank(message = "Поле login не может содержать пробелы")
+    @NotBlank(message = "Поле login не может быть пустым или содержать пробелы")
     @Pattern(regexp = "\\S+", message = "Поле login не может содержать пробелы")
     private String login;
     private String name;
     @NotNull
     private LocalDate birthday;
     @JsonIgnore
-    private final Set<Long> friends;
+    private final Set<Long> friends = new HashSet<>();
 
     public void addFriend(Long id) {
         friends.add(id);
