@@ -17,21 +17,29 @@ public class RatingMpaDbStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private RatingMpa mapRowToRatingMpa(SqlRowSet rowSet) {
+        Long ratingId = rowSet.getLong("mpa_id");
+        String ratingName = rowSet.getString("rating_name");
+
+        return new RatingMpa(ratingId, ratingName);
+    }
+
     public RatingMpa getMpaRating(int ratingId) {
         String sqlQuery = "SELECT * FROM rating_mpa WHERE mpa_id = ?";
         SqlRowSet srs = jdbcTemplate.queryForRowSet(sqlQuery, ratingId);
         if (srs.next()) {
-            return new RatingMpa((long)ratingId, srs.getString("rating_name"));
+            return mapRowToRatingMpa(srs);
         }
         return null;
     }
 
     public List<RatingMpa> getMpaRatings() {
+        log.info("Fetching all MPA ratings from database");
         List<RatingMpa> ratingsMpa = new ArrayList<>();
         String sqlQuery = "SELECT * FROM rating_mpa";
         SqlRowSet srs = jdbcTemplate.queryForRowSet(sqlQuery);
         while (srs.next()) {
-            ratingsMpa.add(new RatingMpa(srs.getLong("mpa_id"), srs.getString("rating_name")));
+            ratingsMpa.add(mapRowToRatingMpa(srs));
         }
         return ratingsMpa;
     }
