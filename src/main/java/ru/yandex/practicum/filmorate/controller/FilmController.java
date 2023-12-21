@@ -3,15 +3,18 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Slf4j
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
@@ -70,7 +73,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopularMovies(@RequestParam(defaultValue = "10") Integer count) {
+    public List<Film> getPopularMovies(@Positive @RequestParam(defaultValue = "10") Integer count) {
         log.info("Пришел GET запрос /popular");
         List<Film> response = filmService.getFirstMostPopularFilms(count);
         log.info("Отправлен ответ GET /popular с телом: {}", response);
