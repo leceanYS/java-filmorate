@@ -22,6 +22,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User addUser(User user) {
+        log.info("Adding user: {}", user.getName());
+
         Map<String, Object> keys = new SimpleJdbcInsert(this.jdbcTemplate)
                 .withTableName("users")
                 .usingColumns("user_name", "login", "email", "birthday")
@@ -32,10 +34,11 @@ public class UserDbStorage implements UserStorage {
                         "email", user.getEmail(),
                         "birthday", java.sql.Date.valueOf(user.getBirthday())))
                 .getKeys();
-        //user.setId((Long) keys.get("id"));
         user.setId(((Integer) keys.get("id")).longValue());
+        log.info("User added successfully");
         return user;
     }
+
 
     @Override
     public List<User> getUsers() {
