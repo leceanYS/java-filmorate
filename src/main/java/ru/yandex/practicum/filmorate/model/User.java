@@ -1,58 +1,44 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
+import javax.validation.constraints.PastOrPresent;
+import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
 public class User {
-    private int id;
-    private String name;
+
+    private Long id;
+    @NotBlank
     @Email
     private String email;
-    @NotBlank
+    @NotBlank(message = "Поле login не может содержать пробелы")
     private String login;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date birthday;
+    private String name;
+    @PastOrPresent
+    private LocalDate birthday;
     @JsonIgnore
-    private Set<Integer> friends = new HashSet<>();
+    private final Set<Long> friends = new HashSet<>();
 
-    public User(int id, String name, String email, String login, Date birthday) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.login = login;
-        this.birthday = birthday;
+    public void addFriend(Long id) {
+        friends.add(id);
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                '}';
+    public void removeFriend(Long id) {
+        friends.remove(id);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return getEmail().equals(user.getEmail());
+    public int getAllFriends() {
+        return friends.size();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getEmail());
-    }
 }

@@ -10,12 +10,11 @@ import javax.validation.constraints.Positive;
 @Data
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class Genre {
+public class RatingMpa {
 
     @Positive
     protected Long id;
 
     @NotBlank
     protected String name;
-
 }
