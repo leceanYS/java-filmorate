@@ -18,29 +18,38 @@ public class GenreDbStorage implements GenreStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private Genre mapRowToGenre(SqlRowSet rowSet) {
+        Long genreId = rowSet.getLong("id");
+        String genreName = rowSet.getString("genre_name");
+        return new Genre(genreId, genreName);
+    }
+
     @Override
     public void deleteGenre(Long filmId) {
-        String sglQuery = "DELETE film_genres WHERE genre_id = ?";
-        jdbcTemplate.update(sglQuery, Long.valueOf(filmId).intValue());
+        log.info("Deleting genre from film with ID: {}", filmId);
+        String sqlQuery = "DELETE film_genres WHERE genre_id = ?";
+        jdbcTemplate.update(sqlQuery, Long.valueOf(filmId).intValue());
     }
 
     @Override
     public Genre getGenre(Long genreId) {
+        log.info("Getting genre with ID: {}", genreId);
         String sqlQuery = "SELECT * FROM genres WHERE id = ?";
-        SqlRowSet srs = jdbcTemplate.queryForRowSet(sqlQuery, Long.valueOf(genreId).intValue());
-        if (srs.next()) {
-            return new Genre(genreId, srs.getString("genre_name"));
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQuery, Long.valueOf(genreId).intValue());
+        if (rowSet.next()) {
+            return mapRowToGenre(rowSet);
         }
         return null;
     }
 
     @Override
     public List<Genre> getGenres() {
+        log.info("Getting all genres");
         List<Genre> genres = new ArrayList<>();
         String sqlQuery = "SELECT * FROM genres ";
-        SqlRowSet srs = jdbcTemplate.queryForRowSet(sqlQuery);
-        while (srs.next()) {
-            genres.add(new Genre(srs.getLong("id"), srs.getString("genre_name")));
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQuery);
+        while (rowSet.next()) {
+            genres.add(mapRowToGenre(rowSet));
         }
         return genres;
     }
