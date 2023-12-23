@@ -29,7 +29,7 @@ public class Film {
     @NotNull
     private RatingMpa mpa;
     @JsonIgnore
-    private final Set<Long> likes = new HashSet<>();
+    private final Set<Long> likes;
 
 
     public void addLike(Long userId) {
