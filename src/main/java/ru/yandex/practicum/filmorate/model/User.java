@@ -29,7 +29,7 @@ public class User {
     @PastOrPresent
     private LocalDate birthday;
     @JsonIgnore
-    Set<Long> friends;
+    private final Set<Long> friends = new HashSet<>();
 
     public void addFriend(Long id) {
         friends.add(id);

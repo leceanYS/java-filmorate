@@ -29,14 +29,14 @@ public class Film {
     @NotNull
     private RatingMpa mpa;
     @JsonIgnore
-    private final Set<Long> likes = new HashSet<>();
+    Set<Integer> likes;
 
 
-    public void addLike(Long userId) {
+    public void addLike(Integer userId) {
         likes.add(userId);
     }
 
-    public void removeLike(Long userId) {
+    public void removeLike(Integer userId) {
         likes.remove(userId);
     }
 
