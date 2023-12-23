@@ -1,13 +1,11 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -28,21 +26,6 @@ public class Film {
     private Set<Genre> genres;
     @NotNull
     private RatingMpa mpa;
-    @JsonIgnore
-    Set<Long> likes = new HashSet<>();
-
-
-    public void addLike(Long userId) {
-        likes.add(userId);
-    }
-
-    public void removeLike(Long userId) {
-        likes.remove(userId);
-    }
-
-    public int getLikes() {
-        return likes.size();
-    }
 
     public void addGenre(Genre genre) {
         genres.add(genre);
