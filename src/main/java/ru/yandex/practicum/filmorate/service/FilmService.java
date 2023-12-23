@@ -54,9 +54,9 @@ public class FilmService {
 
     public void deleteFilm(Long filmId) {
         log.info("Поиск фильма в БД с id {}", filmId);
+        filmStorage.deleteFilm(filmId);
         log.info("Фильм с id {} найден", filmId);
         log.info("Фильм с id {} успешно удален", filmId);
-        filmStorage.deleteFilm(filmId);
     }
 
     public Film getFilm(Long id) {
@@ -65,9 +65,6 @@ public class FilmService {
     }
 
     public void like(Long filmId, Long userId) {
-        if (filmStorage.getFilm(filmId) == null) {
-            throw new NotFoundException("Фильм с id  = " + filmId + " не найден");
-        }
         if (userService.getUser(userId) == null) {
             throw new NotFoundException("пользователь с id = " + userId + " не найден");
         }
