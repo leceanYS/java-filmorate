@@ -16,10 +16,6 @@ public class UserService {
 
     private final UserStorage userStorage;
 
-    public UserStorage getUserStorage() {
-        return userStorage;
-    }
-
     private void validate(User user) {
         if ((user.getName() == null) || user.getName().isBlank()) {
             user.setName(user.getLogin());
