@@ -13,10 +13,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RatingMpaService {
-    private final RatingMpaDbStorage ratingMpaDbStorage;
+    private final RatingMpaDbStorage ratingMpaStorage;
 
     public RatingMpa getMpaRating(int id) {
-        RatingMpa mpa = ratingMpaDbStorage.getMpaRating(id);
+        RatingMpa mpa = ratingMpaStorage.getMpaRating(id);
         if (mpa == null) {
             throw new NotFoundException("Рейтинг не найден");
         }
@@ -24,6 +24,7 @@ public class RatingMpaService {
     }
 
     public List<RatingMpa> getMpaRatings() {
-        return ratingMpaDbStorage.getMpaRatings();
+        return ratingMpaStorage.getMpaRatings();
     }
 }
+
