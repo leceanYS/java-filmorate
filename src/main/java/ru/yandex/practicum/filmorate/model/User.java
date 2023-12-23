@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,7 +23,7 @@ public class User {
     @Pattern(regexp = "\\S+", message = "Поле login не может содержать пробелы")
     private String login;
     private String name;
-    @PastOrPresent
+    @NotNull
     private LocalDate birthday;
     @JsonIgnore
     private final Set<Long> friends = new HashSet<>();

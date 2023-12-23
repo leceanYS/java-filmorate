@@ -28,6 +28,21 @@ public class Film {
     private Set<Genre> genres;
     @NotNull
     private RatingMpa mpa;
+    @JsonIgnore
+    private final Set<Long> likes = new HashSet<>();
+
+
+    public void addLike(Long userId) {
+        likes.add(userId);
+    }
+
+    public void removeLike(Long userId) {
+        likes.remove(userId);
+    }
+
+    public int getLikes() {
+        return likes.size();
+    }
 
     public void addGenre(Genre genre) {
         genres.add(genre);
